@@ -1,7 +1,7 @@
 <!-- Zphisher -->
 
 <p align="center">
-  <h1>Zphisher2.0</h1>
+  <h1 align="center">Zphisher2.0</h1>
 </p>
 
 <p align="center">
