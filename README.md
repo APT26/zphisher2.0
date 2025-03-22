@@ -1,7 +1,7 @@
 <!-- Zphisher -->
 
 <p align="center">
-  <img src=".github/misc/logo.png">
+  <h1>Zphisher2.0</h1>
 </p>
 
 <p align="center">
